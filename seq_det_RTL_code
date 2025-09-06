@@ -1,0 +1,54 @@
+// ------------------RTL code for sequence detector---------------
+
+module  seq_det(clk,rst,seq_in,det_out);  
+input clk,rst,seq_in;  
+output det_out;  
+//STATE ENCODING 
+parameter IDLE=2'b00; 
+parameter S0=2'b01; 
+parameter S1=2'b10; 
+parameter S2=2'b11;  
+reg [1:0] pre_state,nxt_state;  
+//PRESENT STATE LOGIC  
+          always@(posedge clk)  
+               begin 
+                  if(rst)  
+                       pre_state<=IDLE;  
+                  else  
+                       pre_state<=nxt_state;  
+               end  
+ 
+//NEXT STATE LOGIC  
+         always@(pre_state,seq_in)  
+               begin  
+                   nxt_state=IDLE;    //default assignment (prevents latches) 
+ case(pre_state)  
+    IDLE: 
+      begin  
+      if(seq_in)            // Got first '1'
+          nxt_state=S0;    
+      end  
+    S0: 
+      begin  
+        if(seq_in)          // Got second '1'
+          nxt_state=S1;  
+      end  
+    S1: 
+      begin  
+        if(!seq_in)         // Got '0' after "11" → "110"
+          nxt_state=S2;  
+        else                // Stay in S1 if another '1'
+          nxt_state=S1;  
+      end  
+    S2: 
+      begin  
+        if(seq_in)          // After detection, if '1' comes → go back to S0, Else default 
+          nxt_state=S0;  
+      end  
+  endcase  
+end 
+
+//OUTPUT LOGIC  
+       assign det_out=(pre_state==S2)?1:0;  
+
+endmodule

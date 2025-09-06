@@ -1,0 +1,50 @@
+`timescale 1ns/1ps
+// ---------------Testbench for sequence detector------------------
+module tb;  
+reg clk=0,rst=0,seq_in;  
+wire det_out;  
+ 
+//Cock generation 
+always #5 
+      clk=~clk;  
+
+//DUT instantiation
+seq_det dut(
+    .clk(clk),
+    .rst(rst),
+    .seq_in(seq_in),
+    .det_out(det_out)
+    );  
+
+//task for reset 
+  task reset(); 
+    begin
+      #155  
+      rst=1;  
+      #100  
+      rst=0;
+    end
+  endtask 
+ 
+//Provide some random stimulus
+    always @(posedge clk)     // Wait for clock
+      begin
+         seq_in=$random %2;   // Random 0/1
+      end
+
+  
+  initial
+    begin
+      repeat(100) reset();    //repeat reset task 100 times
+    end
+
+//Dump waves
+initial 
+   begin 
+      $dumpfile("dump.vcd"); 
+      $dumpvars; 
+      #10000 
+       $finish; 
+    end  
+
+endmodule 
