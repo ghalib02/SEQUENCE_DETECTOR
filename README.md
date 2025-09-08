@@ -23,7 +23,6 @@ This project implements a **Sequence Detector** using a Moore Finite State Machi
 4. View results using **GTKWave** or Vivado simulator.
 
 ## 📸 Outputs
-![State Diagram]([diagram(moore overlapping).PNG](https://github.com/ghalib02/SEQUENCE_DETECTOR/blob/new-branch/diagram(moore%20overlapping).PNG))
 ![Schematic](scematic.png)
 ![Waveform](waveform.png)
 
